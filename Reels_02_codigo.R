@@ -1,6 +1,6 @@
-# Suponha que você tem um data frame com uma série
-# histórica de dados mensais. No nosso exemplo é
-# a chuva mensal:
+# Let's say that you have a data frame object which contains a time series,
+# in month scale. In this example, the variable of the time series is the
+# rainfall:
 
 library(tibble)
 
@@ -10,20 +10,19 @@ df <- tibble(
   Chuva = c(rep(1, 10), c(NA,NA), rep(1, 12))
 )
 
-# Nele você quer excluir os dados de um ano em que
-# há pelo menos um dado faltante. Uma solução é
-# usar alguns recursos do dplyr...
+# In it, you want to exclude all data (or rows) of a year in which there is
+# at least one missing data. A possible soluction is to use some dplyr resources...
 
 library(dplyr)
 
 ano_com_falha <-  df %>%
-  # Aqui você agrupa as variáveis Ano e a Chuva se
-  # houver NA na chuva:
+  # Here you're groupping the vars Ano (year) and Chuva (rainfall)
+  # if there is any NA value in Chuva:
   group_by(Ano, is.na(Chuva)) %>%
-  # E com a função tally() o R conta as ocorrências
-  # de NA na chuva e em que ano elas ocorrem,
-  # retornando "TRUE" para a ocorrência:
+  # And with the tally() function, R is going to count all NA occurrencies
+  # in Chuva, and the year that it occurs, returning "TRUE" for any occorrence:
   tally() %>% filter(`is.na(Chuva)` == "TRUE")
 
-# Depois disso, use a identificação feita pelo :
+# After all, use the identification made by the object "ano_com_falha"
+# to exclude a entire year which contains one or more NA values:
 df %>% filter(!Ano %in% ano_com_falha$Ano)
